@@ -7,4 +7,8 @@
 
   <string name="hintText">Please enter your 140-character status</string>
   <string name="buttonUpdate">Update</string>
+  <string name="titleUsername">Username</string>
+  <string name="titlePassword">Password</string>
+  <string name="titleApiRoot">ApiRoot</string>
+  <string name="titlePrefs">Preferences</string>
 </resources>

@@ -3,12 +3,19 @@ package startup.nsn;
 import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,12 +23,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class StatusActivity extends Activity implements OnClickListener, TextWatcher {
+public class StatusActivity extends Activity implements OnClickListener, TextWatcher, OnSharedPreferenceChangeListener {
 	 private static final String TAG = "StatusActivity";
 	  EditText editText;
 	  Button updateButton;
 	  Twitter twitter;
 	  TextView textCount; // 
+	  SharedPreferences prefs;
 
 
 	  /** Called when the activity is first created. */
@@ -30,6 +38,12 @@ public class StatusActivity extends Activity implements OnClickListener, TextWat
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.status);
 
+	    
+	    
+	 // Setup preferences
+        prefs = PreferenceManager.getDefaultSharedPreferences(this); // 
+        prefs.registerOnSharedPreferenceChangeListener(this);   // 
+	    
 	    // Find views
 	    editText = (EditText) findViewById(R.id.editText); // 
 	    updateButton = (Button) findViewById(R.id.buttonUpdate);
@@ -43,8 +57,8 @@ public class StatusActivity extends Activity implements OnClickListener, TextWat
 	    editText.addTextChangedListener(this); // 
 	    
 	    
-	    twitter = new Twitter("student", "password"); // 
-	    twitter.setAPIRootUrl("http://yamba.marakana.com/api");
+	    //twitter = new Twitter("student", "password"); // 
+	    //twitter.setAPIRootUrl("http://yamba.marakana.com/api");
 	  }
 
 	  // Asynchronously posts to twitter
@@ -76,18 +90,63 @@ public class StatusActivity extends Activity implements OnClickListener, TextWat
 	    }
 	  }
 
+	  
+	  public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+	        // invalidate twitter object
+	        twitter = null;
+	}
+	  
 	  // Called when button is clicked
-	  public void onClick(View v) {
-	    String status = editText.getText().toString();
-	    new PostToTwitter().execute(status); // 
-	    Log.d(TAG, "onClicked");
+	 
+	public void onClick(View v) {
+	
+    
+	    // Update twitter status
+        try {
+                getTwitter().setStatus(editText.getText().toString());
+                Log.d(TAG, "onClicked");
+        } catch (TwitterException e) {
+                Log.d(TAG, "Twitter setStatus failed: " + e);
+        }
 	  }
 
 	  
+	  private Twitter getTwitter() {
+	        if (twitter == null) {  // 
+	                String username, password, apiRoot;
+	                username = prefs.getString("username", "");     // 
+	                password = prefs.getString("password", "");
+	    apiRoot = prefs.getString("apiRoot", "http://yamba.marakana.com/api");
+
+	                // Connect to twitter.com
+	                twitter = new Twitter(username, password);      // 
+	                twitter.setAPIRootUrl(apiRoot); // 
+	        }
+	        return twitter;
+	}
 	  
 	  
-	  
-	  // TextWatcher methods
+	  @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		  MenuInflater inflater = getMenuInflater();   // 
+		  inflater.inflate(R.menu.menu, menu);         // 
+		return true;
+	}
+
+
+	  @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {                              // 
+	    case R.id.itemPrefs:
+	      startActivity(new Intent(this, PrefsActivity.class));  // 
+	    break;
+	    }
+
+	    return true;  // 
+	  }
+
+
+	// TextWatcher methods
 	  public void afterTextChanged(Editable statusText) { // 
 	    int count = 140 - statusText.length(); // 
 	    textCount.setText(Integer.toString(count));
