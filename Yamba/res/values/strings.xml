@@ -11,4 +11,7 @@
   <string name="titlePassword">Password</string>
   <string name="titleApiRoot">ApiRoot</string>
   <string name="titlePrefs">Preferences</string>
+    <string name="titleServiceStop">Stop Service</string>
+    <string name="titleServiceStart">Start Service</string>
+  
 </resources>

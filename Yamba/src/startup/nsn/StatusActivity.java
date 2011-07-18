@@ -67,10 +67,16 @@ public class StatusActivity extends Activity implements OnClickListener, TextWat
 	    @Override
 	    protected String doInBackground(String... statuses) { // 
 	      try {
-	        Twitter.Status status = twitter.updateStatus(statuses[0]);
-	        return status.text;
+	    	 
+	    	    YambaApplication yamba = ((YambaApplication) getApplication()); // 
+
+	    	    Twitter.Status status = yamba.getTwitter().updateStatus(statuses[0]); // 
+
+	    	  
+	    	  return status.text;
 	      } catch (TwitterException e) {
-	        Log.e(TAG, e.toString());
+	
+	        Log.e(TAG, "Failed to connect to twitter service", e);
 	        e.printStackTrace();
 	        return "Failed to post";
 	      }
@@ -139,7 +145,15 @@ public class StatusActivity extends Activity implements OnClickListener, TextWat
 	    switch (item.getItemId()) {                              // 
 	    case R.id.itemPrefs:
 	      startActivity(new Intent(this, PrefsActivity.class));  // 
-	    break;
+	      break;
+	    case R.id.itemServiceStart:
+	    	startService(new Intent(this, UpdaterService.class));
+	    	break;
+	    case R.id.itemServiceStop:
+	    	stopService(new Intent(this, UpdaterService.class));
+	    	break;
+	    
+	    
 	    }
 
 	    return true;  // 
