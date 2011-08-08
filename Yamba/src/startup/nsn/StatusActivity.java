@@ -132,32 +132,10 @@ public class StatusActivity extends Activity implements OnClickListener, TextWat
 	}
 	  
 	  
-	  @Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		  MenuInflater inflater = getMenuInflater();   // 
-		  inflater.inflate(R.menu.menu, menu);         // 
-		return true;
-	}
 
 
-	  @Override
-	  public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {                              // 
-	    case R.id.itemPrefs:
-	      startActivity(new Intent(this, PrefsActivity.class));  // 
-	      break;
-	    case R.id.itemServiceStart:
-	    	startService(new Intent(this, UpdaterService.class));
-	    	break;
-	    case R.id.itemServiceStop:
-	    	stopService(new Intent(this, UpdaterService.class));
-	    	break;
-	    
-	    
-	    }
 
-	    return true;  // 
-	  }
+	
 
 
 	// TextWatcher methods

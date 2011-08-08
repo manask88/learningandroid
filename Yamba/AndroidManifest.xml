@@ -7,14 +7,16 @@
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".YambaApplication">
         <activity android:name=".StatusActivity"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+                  android:label="@string/app_name" />
+
+      
         <activity android:name=".PrefsActivity"></activity>
-        
+        <activity android:name=".TimelineActivity">
+                    <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER"></category>
+            </intent-filter>
+              </activity>
 		<service android:name=".UpdaterService" />
 		
     </application>

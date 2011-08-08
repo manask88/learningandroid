@@ -47,6 +47,13 @@ OnSharedPreferenceChangeListener { //
 	    Log.i(TAG, "onTerminated");
 	  }
 
+	  
+	  public SharedPreferences getPrefs(){
+		  
+		return PreferenceManager.getDefaultSharedPreferences(this);
+		  
+	  }
+	  
 	  public synchronized Twitter getTwitter() { // 
 	    if (this.twitter == null) {
 	      String username = this.prefs.getString("username", "");
