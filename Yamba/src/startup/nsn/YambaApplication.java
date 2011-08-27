@@ -19,7 +19,17 @@ OnSharedPreferenceChangeListener { //
 	  private StatusData statusData;
 	  private SharedPreferences prefs;
 	  private boolean serviceRunning;
-
+	  public static final String LOCATION_PROVIDER_NONE = "NONE";
+	  public static final long INTERVAL_NEVER = 0;
+	  
+	  
+	  public String getProvider() {
+		  return prefs.getString("provider", LOCATION_PROVIDER_NONE);
+	  }
+	  
+	  public long getInterval() {
+		  return prefs.getLong("interval", INTERVAL_NEVER);
+	  }
 	  public StatusData getStatusData() {
 		  return statusData;
 	  }

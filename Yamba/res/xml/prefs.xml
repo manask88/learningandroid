@@ -4,5 +4,12 @@
     <EditTextPreference android:key="username" android:title="@string/titleUsername"></EditTextPreference>
     <EditTextPreference android:key="password" android:title="@string/titlePassword" android:password="true"></EditTextPreference>
         <EditTextPreference android:key="apiRoot" android:title="@string/titleApiRoot"></EditTextPreference>
-    
+    <ListPreference android:entryValues="@array/providerValues"
+   android:summary="summary"
+   android:title="titleUpdaterInterval"
+   android:entries="@array/providers" android:key="providers"></ListPreference>
+   <ListPreference android:entryValues="@array/intervalValues"
+    android:summary="summaryUpdaterInterval"
+    android:title="@titleUpdaterInterval"
+    android:entries="@array/interval" android:key="interval" />
 </PreferenceScreen>

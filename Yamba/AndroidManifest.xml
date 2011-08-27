@@ -18,7 +18,36 @@
             </intent-filter>
               </activity>
 		<service android:name=".UpdaterService" />
+		<receiver android:name=".BootReceiver">
+		<intent-filter>
+			<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+		</intent-filter>
+		</receiver>
+		<receiver android:name=".NetworkReceiver">
+			<intent-filter>
+				<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+			</intent-filter>
+		</receiver>
+	   <receiver android:name=".YambaWidget" android:label="@string/msgLastTimelineUpdate">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+
+      <meta-data android:name="android.appwidget.provider"
+        android:resource="@xml/yamba_widget_info" />
+    </receiver>
+		<provider android:name="StatusProvider" android:authorities="startup.nsn.yamba.statusprovider"></provider>
+		
 		
     </application>
      <uses-permission android:name="android.permission.INTERNET" />
+     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+     <permission android:name="startup.nsn.yamba.SEND_TIMELINE_NOTIFICATIONS" android:label="SEND NOTIFICATIONS"  android:permissionGroup="android.permission-group.PERSONAL_INFO" android:protectionLevel="normal" />
+	 <permisison android:name="startup.nsn.yamba.RECEIVE_TIMELINE_NOTIFICATIONS" android:label="RECEIVE NOTIFICATIONS"  android:permissionGroup="android.permission-group.PERSONAL_INFO" android:protectionLevel="normal" />
+		
+		
+	<uses-permission android:name="startup.nsn.yamba.SEND_TIMELINE_NOTIFICATIONS" />
+		<uses-permission android:name="startup.nsn.yamba.RECEIVE_TIMELINE_NOTIFICATIONS" />
+	
 </manifest>

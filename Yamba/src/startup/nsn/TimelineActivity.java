@@ -1,13 +1,17 @@
 package startup.nsn;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -16,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class TimelineActivity extends BaseActivity{
+	static final String SEND_TIMELINE_NOTIFICATIONS = "startup.nsn." +
+			".SEND_TIMELINE_NOTIFICATIONS";
+	TimelineReceiver receiver;
 	DbHelper dbHelper;
 	SQLiteDatabase db;
 	Cursor cursor;
@@ -37,7 +44,6 @@ public class TimelineActivity extends BaseActivity{
 		db=dbHelper.getReadableDatabase();
 		
 		 if ( yamba.getPrefs().getString("username", null) ==null) {
-
 			startActivity(new Intent(this,PrefsActivity.class));
 			Toast.makeText(this, "Debe llenar preferencias", Toast.LENGTH_LONG).show();
 
@@ -45,7 +51,7 @@ public class TimelineActivity extends BaseActivity{
 		 
 		 
 			listTimeline = (ListView) findViewById(R.id.listTimeline);
-
+			startService(new Intent(this,UpdaterService.class));
 	}
 	
 	
@@ -61,9 +67,17 @@ public class TimelineActivity extends BaseActivity{
 		super.onResume();
 		
 		this.setupList();
-	
+		IntentFilter filter;
+		receiver=new TimelineReceiver();
+		filter=new IntentFilter("startup.nsn.yamba.NEW_STATUS");
+		registerReceiver(receiver,filter,SEND_TIMELINE_NOTIFICATIONS,null);
 	}
 	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		unregisterReceiver(receiver);
+	}
 	private void setupList() {
 		cursor = yamba.getStatusData().getStatusUpdates();
 		startManagingCursor(cursor);
@@ -72,7 +86,7 @@ public class TimelineActivity extends BaseActivity{
 	adapter = new SimpleCursorAdapter(this,R.layout.row,cursor,FROM,TO);
 	adapter.setViewBinder(VIEW_BINDER);
 	listTimeline.setAdapter(adapter);
-		
+		Toast.makeText(this, "Iniciado TimeLine", Toast.LENGTH_LONG).show();
 	}
 	static final ViewBinder VIEW_BINDER = new ViewBinder() {
 		public boolean setViewValue(View view,Cursor cursor, int columnIndex) {
@@ -86,5 +100,12 @@ public class TimelineActivity extends BaseActivity{
 			return true;
 		}
 	};
-	
+	class TimelineReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			cursor.requery();
+			adapter.notifyDataSetChanged();
+			Log.d("TimelineReceiver","onReceived");
+		}
+	}
 }
